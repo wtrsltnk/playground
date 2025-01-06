@@ -11,14 +11,17 @@ project(playground)
 find_package(OpenGL REQUIRED)
 
 add_executable(playground
-    glad.c
-    glad_wgl.c
-    openglapp.cpp
-    openglapp.hpp
-    program.cpp
-    shader.cpp
-    shader.hpp
-    vertexbuffer.hpp
+    include/KHR/khrplatform.h
+    include/glad/glad.h
+    include/glad/glad_wgl.h
+    src/glad.c
+    src/glad_wgl.c
+    src/openglapp.cpp
+    src/openglapp.hpp
+    src/program.cpp
+    src/shader.cpp
+    src/shader.hpp
+    src/vertexbuffer.hpp
 )
 
 target_include_directories(playground
