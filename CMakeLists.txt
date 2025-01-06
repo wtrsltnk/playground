@@ -6,9 +6,9 @@
 #
 cmake_minimum_required(VERSION 3.20)
 
-project(playground)
+include(cmake/CPM.cmake)
 
-find_package(OpenGL REQUIRED)
+project(playground)
 
 add_executable(playground
     include/KHR/khrplatform.h
@@ -29,15 +29,15 @@ target_include_directories(playground
         include
 )
 
-# add dependencies
-include(cmake/CPM.cmake)
+find_package(OpenGL REQUIRED)
 
 CPMAddPackage("gh:gabime/spdlog#v1.15.0")
+
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 
 target_link_libraries(playground
     PRIVATE
-        OpenGL::GL
+        OpenGL::GL  # Needed for wglCreateContext, wglDeleteContext and wglMakeCurrent
         spdlog
         glm
 )

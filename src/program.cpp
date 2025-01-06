@@ -1,23 +1,17 @@
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <spdlog/spdlog.h>
 
 #include "openglapp.hpp"
 #include "shader.hpp"
 #include "vertexbuffer.hpp"
 
-struct Vertex
-{
-    float pos[3];
-    float uv[2];
-};
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <spdlog/spdlog.h>
 
-/// starting point
 int main(
     int argc,
     const char *argv[])
 {
-    spdlog::set_level(spdlog::level::debug); // Set global log level to debug
+    spdlog::set_level(spdlog::level::debug);
 
     OpenGLApp app;
 
@@ -25,13 +19,13 @@ int main(
     app.width = 800;
     app.height = 640;
 
-    if (!openApp(app))
-    {
-        return 1;
-    }
+    if (!openApp(app)) return 1;
 
-    /// draw single color on whole window
-    float background_colour[4] = {0x64 / 255.0f, 0x95 / 255.0f, 0xED / 255.0f, 1.0f};
+    struct Vertex
+    {
+        float pos[3];
+        float uv[2];
+    };
 
     VertextBuffer<Vertex> vb;
 
@@ -91,14 +85,9 @@ int main(
     shdr.setUniform("u_view", glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f)));
     shdr.setUniform("u_model", glm::mat4(1.0f));
 
-    /// main loop
     while (app.GameLoop())
     {
-        glClearColor(
-            background_colour[0],
-            background_colour[1],
-            background_colour[2],
-            background_colour[3]);
+        glClearColor(0.39f, 0.58f, 0.92f, 1.0f);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

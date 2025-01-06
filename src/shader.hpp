@@ -17,7 +17,6 @@
 #define GLSL130(src) "#version 130\n" #src
 #define GLSL140(src) "#version 140\n" #src
 #define GLSL150(src) "#version 150\n" #src
-#define GLSL330CORE(src) "#version 330 core\n" #src
 #define GLSL330(src) "#version 330\n" #src
 #define GLSL400(src) "#version 400\n" #src
 #define GLSL410(src) "#version 410\n" #src
