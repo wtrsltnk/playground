@@ -1,4 +1,4 @@
-#include "openglapp.hpp"
+#include <openglapp.hpp>
 
 #include <Windows.h>
 #include <glad/glad_wgl.h>
