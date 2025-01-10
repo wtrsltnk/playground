@@ -167,12 +167,25 @@ public:
         return result;
     }
 
+    size_t addTriangle(
+        int indices[3])
+    {
+        auto result = _indices.size();
+
+        _indices.push_back(indices[0]);
+        _indices.push_back(indices[1]);
+        _indices.push_back(indices[2]);
+
+        return result;
+    }
+
 private:
     GLuint _vao = 0;
     GLuint _vbo = 0;
     unsigned int _stride = 0;
     std::vector<std::string> _attrNames;
     std::vector<TVertex> _vertices;
+    std::vector<GLuint> _indices;
 
     template <
         class TAttr, unsigned int NAttr>

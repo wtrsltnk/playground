@@ -10,23 +10,23 @@ include(cmake/CPM.cmake)
 
 project(playground)
 
-add_executable(playground
+option(BUILD_EXAMPLE "Build the example player" OFF)
+
+add_library(playground
     include/KHR/khrplatform.h
     include/glad/glad.h
     include/glad/glad_wgl.h
-    src/glad.c
-    src/glad_wgl.c
-    src/openglapp.cpp
-    src/openglapp.hpp
-    src/program.cpp
-    src/shader.cpp
-    src/shader.hpp
-    src/vertexbuffer.hpp
+    include/openglapp.hpp
+    include/shader.hpp
+    include/vertexbuffer.hpp
 )
 
-target_include_directories(playground
+target_sources(playground
     PRIVATE
-        include
+        src/glad.c
+        src/glad_wgl.c
+        src/openglapp.cpp
+        src/shader.cpp
 )
 
 find_package(OpenGL REQUIRED)
@@ -36,13 +36,34 @@ CPMAddPackage("gh:gabime/spdlog#v1.15.0")
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 
 target_link_libraries(playground
-    PRIVATE
+    PUBLIC
         OpenGL::GL  # Needed for wglCreateContext, wglDeleteContext and wglMakeCurrent
         spdlog
         glm
 )
 
 target_compile_features(playground
-    PRIVATE
+    PUBLIC
         cxx_std_20
 )
+
+target_include_directories(playground
+    PUBLIC
+        include
+)
+
+if (BUILD_EXAMPLE)
+    add_executable(playground-player
+        src/program.cpp
+    )
+
+    target_link_libraries(playground-player
+        PRIVATE
+            playground
+    )
+
+    target_compile_features(playground-player
+        PRIVATE
+            cxx_std_20
+    )
+endif(BUILD_EXAMPLE)

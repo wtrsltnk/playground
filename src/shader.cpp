@@ -1,4 +1,4 @@
-#include "shader.hpp"
+#include <shader.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <spdlog/spdlog.h>

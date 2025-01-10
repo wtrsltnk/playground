@@ -1,7 +1,7 @@
 
-#include "openglapp.hpp"
-#include "shader.hpp"
-#include "vertexbuffer.hpp"
+#include <openglapp.hpp>
+#include <shader.hpp>
+#include <vertexbuffer.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
