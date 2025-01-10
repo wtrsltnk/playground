@@ -1,8 +1,17 @@
 #include <openglapp.hpp>
 
-#include <Windows.h>
+#include <Windowsx.h>
 #include <glad/glad_wgl.h>
 #include <spdlog/spdlog.h>
+
+void updateKeyStateOnKeyDown(
+    KeyButtonStates &state);
+
+void updateKeyStateOnKeyUp(
+    KeyButtonStates &state);
+
+KeyboardButtons mapKey(
+    WPARAM wParam);
 
 LRESULT WINAPI wndProc(
     HWND hWnd,
@@ -30,10 +39,100 @@ LRESULT WINAPI wndProc(
     {
         case WM_KEYDOWN:
         {
-            if (wParam == VK_ESCAPE)
+            if (app != nullptr)
             {
-                PostQuitMessage(0); /// exit when user press any key
+                auto key = mapKey(wParam);
+
+                if (key != KeyUnknown)
+                {
+                    updateKeyStateOnKeyDown(app->KeyStates[key]);
+                }
             }
+        }
+        break;
+
+        case WM_KEYUP:
+        {
+            if (app != nullptr)
+            {
+                auto key = mapKey(wParam);
+
+                if (key != KeyUnknown)
+                {
+                    updateKeyStateOnKeyUp(app->KeyStates[key]);
+                }
+            }
+        }
+        break;
+
+        case WM_LBUTTONDOWN:
+        {
+            if (app != nullptr)
+            {
+                updateKeyStateOnKeyDown(app->ButtonStates[MouseLeftButton]);
+            }
+        }
+        break;
+
+        case WM_LBUTTONUP:
+        {
+            if (app != nullptr)
+            {
+                updateKeyStateOnKeyUp(app->ButtonStates[MouseLeftButton]);
+            }
+        }
+        break;
+
+        case WM_RBUTTONDOWN:
+        {
+            if (app != nullptr)
+            {
+                updateKeyStateOnKeyDown(app->ButtonStates[MouseRightButton]);
+            }
+        }
+        break;
+
+        case WM_RBUTTONUP:
+        {
+            if (app != nullptr)
+            {
+                updateKeyStateOnKeyUp(app->ButtonStates[MouseRightButton]);
+            }
+        }
+        break;
+
+        case WM_MBUTTONDOWN:
+        {
+            if (app != nullptr)
+            {
+                updateKeyStateOnKeyDown(app->ButtonStates[MouseMiddleButton]);
+            }
+        }
+        break;
+
+        case WM_MBUTTONUP:
+        {
+            if (app != nullptr)
+            {
+                updateKeyStateOnKeyUp(app->ButtonStates[MouseMiddleButton]);
+            }
+        }
+        break;
+
+        case WM_MOUSEMOVE:
+        {
+            static LPARAM prevParam = lParam;
+
+            if (app != nullptr)
+            {
+                app->mousePosX = GET_X_LPARAM(lParam);
+                app->mousePosY = GET_Y_LPARAM(lParam);
+
+                app->mouseDiffX = GET_X_LPARAM(prevParam) - app->mousePosX;
+                app->mouseDiffY = GET_Y_LPARAM(prevParam) - app->mousePosY;
+            }
+
+            prevParam = lParam;
         }
         break;
 
@@ -259,10 +358,21 @@ bool openApp(
 
     spdlog::info("window with opengl 4.6 context created");
 
-    app.GameLoop = [hdc]() -> bool {
+    app.GameLoop = [hwnd, hdc]() -> bool {
         MSG msg = {};
 
         SwapBuffers(hdc);
+
+        auto app = reinterpret_cast<OpenGLApp *>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+
+        if (app != nullptr)
+        {
+            for (int i = 0; i < KeyboardButtonsCount; i++)
+            {
+                if (app->KeyStates[i] == KeyButtonStates::KeyButtonStatePressed) app->KeyStates[i] = KeyButtonStates::KeyButtonStateDown;
+                if (app->KeyStates[i] == KeyButtonStates::KeyButtonStateReleased) app->KeyStates[i] = KeyButtonStates::KeyButtonStateUp;
+            }
+        }
 
         while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
         {
@@ -289,4 +399,42 @@ bool openApp(
     };
 
     return true;
+}
+
+void updateKeyStateOnKeyDown(
+    KeyButtonStates &state)
+{
+    if (state == KeyButtonStateUp)
+    {
+        state = KeyButtonStatePressed;
+    }
+    else if (state == KeyButtonStateDown || state == KeyButtonStatePressed)
+    {
+        state = KeyButtonStateDown;
+    }
+}
+
+void updateKeyStateOnKeyUp(
+    KeyButtonStates &state)
+{
+    if (state == KeyButtonStateDown)
+    {
+        state = KeyButtonStateReleased;
+    }
+    else if (state == KeyButtonStateUp || state == KeyButtonStateReleased)
+    {
+        state = KeyButtonStateUp;
+    }
+}
+
+KeyboardButtons mapKey(
+    WPARAM wParam)
+{
+    switch (wParam)
+    {
+        case VK_ESCAPE:
+            return KeyEscape;
+        default:
+            return KeyUnknown;
+    }
 }
