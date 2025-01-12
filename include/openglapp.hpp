@@ -131,6 +131,7 @@ enum KeyboardButtons
 
 enum MouseButtons
 {
+    MouseUnknown,
     MouseLeftButton,
     MouseRightButton,
     MouseMiddleButton,
