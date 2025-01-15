@@ -142,6 +142,8 @@ LRESULT WINAPI wndProc(
             {
                 app->width = LOWORD(lParam);
                 app->height = HIWORD(lParam);
+
+                app->isResizedInCurrentFrame = true;
             }
         }
         break;
@@ -372,6 +374,8 @@ bool openApp(
                 if (app->KeyStates[i] == KeyButtonStates::KeyButtonStatePressed) app->KeyStates[i] = KeyButtonStates::KeyButtonStateDown;
                 if (app->KeyStates[i] == KeyButtonStates::KeyButtonStateReleased) app->KeyStates[i] = KeyButtonStates::KeyButtonStateUp;
             }
+
+            app->isResizedInCurrentFrame = false;
         }
 
         while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))

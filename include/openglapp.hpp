@@ -211,6 +211,9 @@ struct OpenGLApp
         return ButtonStates[button] == KeyButtonStates::KeyButtonStateReleased;
     }
 
+    ///
+    bool isResizedInCurrentFrame = false;
+
     /// This function is used to check if the app is still running.
     std::function<bool()> GameLoop;
 
