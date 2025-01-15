@@ -92,6 +92,12 @@ int main(
             break;
         }
 
+        if (app.isResizedInCurrentFrame)
+        {
+            glViewport(0, 0, app.width, app.height);
+            shdr.setUniform("u_proj", glm::perspective(120.0f, app.width / std::max(1.0f, float(app.height)), 0.1f, 100.0f));
+        }
+
         glClearColor(0.39f, 0.58f, 0.92f, 1.0f);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

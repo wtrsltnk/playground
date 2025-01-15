@@ -142,6 +142,8 @@ LRESULT WINAPI wndProc(
             {
                 app->width = LOWORD(lParam);
                 app->height = HIWORD(lParam);
+
+                app->isResizedInCurrentFrame = true;
             }
         }
         break;
@@ -212,9 +214,6 @@ bool openApp(
 {
     const char *windowClassName = "FullOpenGLAppWindow";
 
-    HWND hwnd = NULL;
-    HDC hdc = NULL;
-    HGLRC hrc = NULL;
     HINSTANCE hInstance = GetModuleHandle(NULL);
 
     WNDCLASSEX wc = {
@@ -241,7 +240,7 @@ bool openApp(
         app.height = GetSystemMetrics(SM_CYSCREEN);
     }
 
-    hwnd = CreateWindow(
+    HWND hwnd = CreateWindow(
         wc.lpszClassName,
         app.title,
         fullScreen ? WS_POPUP | WS_VISIBLE : WS_OVERLAPPEDWINDOW,
@@ -251,6 +250,20 @@ bool openApp(
         NULL, NULL,
         wc.hInstance,
         (VOID *)&app);
+
+    return embedApp((long)hwnd, app);
+}
+
+bool embedApp(
+    long window,
+    OpenGLApp &app)
+{
+    const char *windowClassName = "ChildOpenGLAppWindow";
+
+    HWND hwnd = (HWND)window;
+    HDC hdc = NULL;
+    HGLRC hrc = NULL;
+    HINSTANCE hInstance = GetModuleHandle(NULL);
 
     hdc = GetDC(hwnd);
 
@@ -352,8 +365,6 @@ bool openApp(
     ShowWindow(hwnd, SW_SHOWDEFAULT);
     UpdateWindow(hwnd);
 
-    if (fullScreen) ShowCursor(false);
-
     glViewport(0, 0, app.width, app.height);
 
     spdlog::info("window with opengl 4.6 context created");
@@ -372,6 +383,8 @@ bool openApp(
                 if (app->KeyStates[i] == KeyButtonStates::KeyButtonStatePressed) app->KeyStates[i] = KeyButtonStates::KeyButtonStateDown;
                 if (app->KeyStates[i] == KeyButtonStates::KeyButtonStateReleased) app->KeyStates[i] = KeyButtonStates::KeyButtonStateUp;
             }
+
+            app->isResizedInCurrentFrame = false;
         }
 
         while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))

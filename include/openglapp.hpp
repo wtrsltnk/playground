@@ -211,6 +211,9 @@ struct OpenGLApp
         return ButtonStates[button] == KeyButtonStates::KeyButtonStateReleased;
     }
 
+    ///
+    bool isResizedInCurrentFrame = false;
+
     /// This function is used to check if the app is still running.
     std::function<bool()> GameLoop;
 
@@ -218,8 +221,13 @@ struct OpenGLApp
     std::function<int()> Cleanup;
 };
 
-/// Open an app window. This will create a (fullscreen) window with an OpenGL 4.6 context.
+/// Open an GL window. This will create a (fullscreen) window with an OpenGL 4.6 context.
 bool openApp(
+    OpenGLApp &app);
+
+/// Embed an GL window. This will create a child window with an OpenGL 4.6 context.
+bool embedApp(
+    long window,
     OpenGLApp &app);
 
 #endif // OPENGLAPP_HPP
